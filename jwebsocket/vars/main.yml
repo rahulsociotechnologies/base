@@ -1,1 +1,2 @@
 --- 
+pub: export JWEBSOCKET_HOME=/opt/jWebSocket-1.0/

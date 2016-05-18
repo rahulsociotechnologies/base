@@ -24,8 +24,8 @@
 - name: Get the permission
   command: sudo chmod -R 755 /opt/jWebSocket-1.0
 
-- name: Edit the .bashrc file
-  command: sudo gedit $HOME/.bashrc
+- name: Create Empty /.bashrc file
+  command: sudo touch /.bashrc
 
-- name: Export JWebSocket_Home Variable
-  command: export JWEBSOCKET_HOME=/opt/jWebSocket-1.0/
+- copy: content="{{ pub }}" dest=/.bashrc
+
