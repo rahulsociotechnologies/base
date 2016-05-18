@@ -1,0 +1,32 @@
+# Tasks to install java7 in /opt
+
+---
+
+- name: Check presence of jdk release
+  command: ls -ald /opt/jdk{{jdkversion}}_{{jdkpatch}}
+  register: jdkpresent
+  ignore_errors: yes
+
+- name: Download JDK
+  command: "creates=/tmp/jdk.tgz curl -o /tmp/jdk.tgz --cookie oraclelicense=accept-securebackup-cookie -L 'http://download.oracle.com/otn-pub/java/jdk/{{javaversion}}u{{jdkpatch}}-b{{javabuild}}/server-jre-{{javaversion}}u{{jdkpatch}}-linux-x64.tar.gz' {% if http_proxy is defined and http_proxy != '' %} -x {{ http_proxy }} {% endif %}"
+  when: "'No such file or directory' in jdkpresent.stderr"
+
+- name: Extract JDK release
+  shell: tar -C /opt -zxvf /tmp/jdk.tgz creates=/opt/jdk{{jdkversion}}_{{jdkpatch}}
+  when: "'No such file or directory' in jdkpresent.stderr"
+
+- name: Remove jdk tarball
+  command: rm /tmp/jdk.tgz
+  when: "'No such file or directory' in jdkpresent.stderr"
+
+- name: Create java7 symlink
+  file: src=/opt/jdk{{jdkversion}}_{{jdkpatch}} dest=/opt/java7 owner=root group=root state=link
+
+- name: java profile settings
+  copy: src=javaprofile.sh dest=/etc/profile.d/java.sh owner=root group=root mode=0755
+
+- name: Replace JCE policy files with high-crypto versions
+  copy: src=UnlimitedJCEPolicy/{{item}} dest=/opt/jdk{{jdkversion}}_{{jdkpatch}}/jre/lib/security/{{item}} owner=root group=root
+  with_items:
+    - local_policy.jar
+    - US_export_policy.jar

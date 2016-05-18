@@ -1,0 +1,6 @@
+---
+mysql_db: 
+     - name: emp
+       replicate: yes
+     - name: dept
+       replicate: no

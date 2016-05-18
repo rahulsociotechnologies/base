@@ -1,0 +1,10 @@
+---
+- name: Create a Tomcat server
+  hosts: olyfeansible
+  sudo: yes
+  sudo_user: root
+  remote_user: root
+  roles:
+     - java7
+     - tomcat7
+

@@ -1,0 +1,6 @@
+- name: install java
+  apt: name={{ item }} update_cache=true state=installed
+  with_items:
+    - oracle-java7-installer
+  tags: packages
+

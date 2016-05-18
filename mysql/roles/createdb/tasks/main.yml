@@ -1,0 +1,25 @@
+--- 
+- name: Set MySQL root password before installing
+  debconf: name='mysql-server' question='mysql-server/root_password' value='{{db_password | quote}}' vtype='password'
+
+- name: Confirm MySQL root password before installing
+  debconf: name='mysql-server' question='mysql-server/root_password_again' value='{{db_password | quote}}' vtype='password'
+
+- name: Install MySQL
+  apt: name={{ item }} update_cache=true state=installed
+  with_items:
+    - mysql-server
+    - python-mysqldb
+    - python-selinux
+  tags: packages
+
+- name: Ensure the MySQL service is running
+  service: name=mysql state=started enabled=yes
+
+- name: Create the database's
+  mysql_db: name={{ item.name }} state=present
+  with_items: mysql_db
+  when: mysql_db|lower() != 'none'
+
+
+

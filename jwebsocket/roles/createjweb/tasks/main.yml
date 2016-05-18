@@ -1,0 +1,31 @@
+--- 
+- name: Install unzip
+  apt: name={{ item }} update_cache=true state=latest
+  with_items:
+    - unzip
+  tags: packages
+
+- name: install java
+  apt: name={{ item }} update_cache=true state=installed
+  with_items:
+    - oracle-java7-installer
+  tags: packages
+
+- name: remove existing unzip file
+  command: rm -rf /opt/jWebSocket-1.0
+
+- name: download jWebSocketServer source
+  get_url: url=http://cdn.jwebsocket.org/jwebsocket-1.0/jWebSocketServer-1.0.zip 
+           dest=/tmp/jWebSocketServer-1.0.zip
+
+- name: Unzip jWebSocketServer source
+  command: unzip /tmp/jWebSocketServer-1.0.zip -d /opt 
+
+- name: Get the permission
+  command: sudo chmod -R 755 /opt/jWebSocket-1.0
+
+- name: Edit the .bashrc file
+  command: sudo gedit $HOME/.bashrc
+
+- name: Export JWebSocket_Home Variable
+  command: export JWEBSOCKET_HOME=/opt/jWebSocket-1.0/

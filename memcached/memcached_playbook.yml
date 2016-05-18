@@ -1,0 +1,9 @@
+---
+- name: Create a Memcached service
+  hosts: olyfeansible
+  sudo: yes
+  sudo_user: root
+  remote_user: root
+  roles:
+     - roles
+
